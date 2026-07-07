@@ -1,1 +1,287 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head><script>window["__codeletBootstrap__"]=JSON.parse('{"A":"A","B":"20260707-05-f6eb95b"}');</script><script src="/_sdk/f432b76fb310b513.telemetry_sdk.js" integrity="sha512-9FJQ55EKmmqhyyik8BhrMVfm0+iYYfb8uOlRsjtkxJMEI97qOVEI4PnHohDjQAtvAep0IOEpdQ64eki0sz62ug=="></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memória da Saúde Reprodutiva</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --font-scale: 1;
+    --card-bg: #ffffff;
+    --card-face: linear-gradient(135deg,#0f766e,#0891b2);
+    --ink: #0f2e2b;
+    --panel: #ffffff;
+    --shell: #f0fdfa;
+  }
+  html { font-size: calc(100% * var(--font-scale)); }
+  body { font-family: 'Work Sans', sans-serif; }
+  h1,h2,h3,.serif { font-family: 'Fraunces', serif; }
 
+  body.dark { --panel:#122a2a; --shell:#07201f; --ink:#e6fffb; --card-bg:#0e3532; --card-face:linear-gradient(135deg,#0d9488,#0369a1); }
+  body.contrast { --panel:#000000; --shell:#000000; --ink:#ffffff; --card-bg:#000000; --card-face:#ffff00; }
+  body.contrast .concept-icon { color:#000 !important; }
+  body.contrast .card-face-front { color:#000 !important; }
+  body.contrast .card-inner .card-front { border:3px solid #ffff00; }
+
+  .shell-bg { background: var(--shell); }
+  .panel { background: var(--panel); color: var(--ink); }
+
+  /* Card flip */
+  .memory-card { perspective: 1000px; aspect-ratio: 3/4; }
+  .card-inner {
+    position:relative; width:100%; height:100%;
+    transition: transform .5s cubic-bezier(.2,.8,.3,1);
+    transform-style: preserve-3d;
+  }
+  .memory-card.flipped .card-inner,
+  .memory-card.matched .card-inner { transform: rotateY(180deg); }
+  .card-front,.card-back {
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:18px; overflow:hidden; display:flex;
+    flex-direction:column; align-items:center; justify-content:center;
+    padding:.5rem; text-align:center;
+  }
+  .card-front { background: var(--card-face); color:#fff; box-shadow:0 8px 20px rgba(0,0,0,.15); }
+  .card-back {
+    transform: rotateY(180deg); background: var(--card-bg); color: var(--ink);
+    box-shadow:0 8px 20px rgba(0,0,0,.15); border:2px solid rgba(15,118,110,.25); gap:.4rem;
+  }
+  .memory-card.matched .card-back { outline:3px solid #16a34a; }
+  .concept-icon { width:clamp(28px,7vw,52px); height:clamp(28px,7vw,52px); }
+  .card-label { font-weight:600; line-height:1.15; font-size:clamp(.62rem,2.2vw,.95rem); }
+  .memory-card:focus-visible { outline:3px solid #f59e0b; outline-offset:3px; border-radius:20px; }
+
+  .fade-in { animation: fadeIn .4s ease both; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:none;} }
+  .pop { animation: pop .35s ease; }
+  @keyframes pop { 0%{transform:scale(1);}50%{transform:scale(1.06);}100%{transform:scale(1);} }
+  .tool-btn { transition: transform .15s ease, background .15s ease; }
+  .tool-btn:hover { transform: translateY(-2px); }
+  .tool-btn:focus-visible { outline:3px solid #f59e0b; outline-offset:2px; }
+  .hidden { display:none !important; }
+</style>
+  <script src="/_sdk/0179d719c431a79e.data_sdk.js" type="text/javascript" integrity="sha512-OsRvJkI5GkC3MJQcgotQYotpzrMSX415GiKKgvYdxQEEkzD/fdchShO2FMSy0PJr/tiINMXOk5Vl2zAgg6bUiA=="></script>
+  <script src="/_sdk/0b3af1c300e720aa.resizing_sdk.js" type="text/javascript" integrity="sha512-nX1P6oXZmEY5wCI2lUVg3BwKu1cr0yi+ZpXgZ0Yn90vkSwvpmyzBMvOyD6VLJUtBwFI2dSrw1b6OvORxSggw3w=="></script>
+ </head>
+ <body data-template-id="__page-root" class="shell-bg min-h-screen w-full">
+  <div class="w-full min-h-screen flex flex-col"><!-- Accessibility toolbar -->
+   <header class="w-full">
+    <div class="max-w-6xl mx-auto w-full px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+     <div class="flex items-center gap-2"><span class="inline-flex items-center justify-center w-9 h-9 rounded-full" style="background:linear-gradient(135deg,#0f766e,#0891b2)"> <i data-lucide="heart-pulse" style="width:20px;height:20px;color:#fff"></i> </span> <span data-template-id="brand-name" class="canva-text serif font-bold"></span>
+     </div>
+     <nav aria-label="Acessibilidade" class="flex items-center gap-2 flex-wrap"><button id="btn-font-dec" type="button" data-template-id="toolbar-font-dec" class="canva-button tool-btn px-3 py-2 rounded-lg font-semibold" aria-label="Diminuir tamanho da fonte"></button> <button id="btn-font-inc" type="button" data-template-id="toolbar-font-inc" class="canva-button tool-btn px-3 py-2 rounded-lg font-semibold" aria-label="Aumentar tamanho da fonte"></button> <button id="btn-contrast" type="button" data-template-id="toolbar-contrast" class="canva-button tool-btn px-3 py-2 rounded-lg font-semibold inline-flex items-center gap-1" aria-pressed="false"><i data-lucide="contrast" style="width:16px;height:16px"></i><span></span></button> <button id="btn-dark" type="button" data-template-id="toolbar-dark" class="canva-button tool-btn px-3 py-2 rounded-lg font-semibold inline-flex items-center gap-1" aria-pressed="false"><i data-lucide="moon" style="width:16px;height:16px"></i><span></span></button> <button id="btn-mute" type="button" data-template-id="toolbar-mute" class="canva-button tool-btn px-3 py-2 rounded-lg font-semibold inline-flex items-center gap-1" aria-pressed="false"><i data-lucide="volume-2" style="width:16px;height:16px"></i><span></span></button>
+     </nav>
+    </div>
+   </header>
+   <main class="flex-1 w-full">
+    <div class="max-w-6xl mx-auto w-full px-4 pb-10"><!-- START SCREEN -->
+     <section id="start-screen" class="fade-in">
+      <div class="panel rounded-3xl shadow-xl overflow-hidden mt-2">
+       <div class="p-8 md:p-12 text-center" style="background:linear-gradient(135deg,rgba(15,118,110,.12),rgba(8,145,178,.12))"><span class="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style="background:linear-gradient(135deg,#0f766e,#0891b2)"> <i data-lucide="brain" style="width:34px;height:34px;color:#fff"></i> </span>
+        <h1 data-template-id="game-title" class="canva-text mb-3"></h1>
+        <p data-template-id="game-subtitle" class="canva-text max-w-2xl mx-auto"></p>
+       </div>
+       <div class="p-6 md:p-10 grid md:grid-cols-2 gap-6 items-start">
+        <div class="rounded-2xl p-5" style="border:2px solid rgba(15,118,110,.2)">
+         <h2 data-template-id="instructions-title" class="canva-text mb-2 flex items-center gap-2"><i data-lucide="list-checks" style="width:22px;height:22px;color:#0f766e"></i></h2>
+         <p data-template-id="instructions-text" class="canva-text leading-relaxed"></p>
+        </div>
+        <div class="rounded-2xl p-5 flex flex-col justify-center items-center text-center" style="background:linear-gradient(135deg,rgba(15,118,110,.08),rgba(8,145,178,.08))">
+         <p data-template-id="start-note" class="canva-text mb-4"></p><button id="btn-start" type="button" data-template-id="start-button" class="canva-button px-8 py-4 rounded-full font-bold shadow-lg inline-flex items-center gap-2 pop"></button>
+        </div>
+       </div>
+      </div>
+     </section><!-- GAME SCREEN -->
+     <section id="game-screen" class="hidden">
+      <div class="panel rounded-2xl shadow-md p-4 md:p-5 mt-2 flex flex-wrap items-center justify-between gap-3">
+       <div class="flex flex-wrap gap-3">
+        <div class="rounded-xl px-4 py-2" style="background:rgba(15,118,110,.1)">
+         <p data-template-id="score-label" class="canva-text text-xs uppercase tracking-wide opacity-70"></p>
+         <p class="serif font-bold text-2xl" style="color:#0f766e"><span id="score-value">0</span></p>
+        </div>
+        <div class="rounded-xl px-4 py-2" style="background:rgba(8,145,178,.1)">
+         <p data-template-id="pairs-label" class="canva-text text-xs uppercase tracking-wide opacity-70"></p>
+         <p class="serif font-bold text-2xl" style="color:#0891b2"><span id="pairs-value">0</span>/10</p>
+        </div>
+        <div class="rounded-xl px-4 py-2" style="background:rgba(245,158,11,.12)">
+         <p data-template-id="moves-label" class="canva-text text-xs uppercase tracking-wide opacity-70"></p>
+         <p class="serif font-bold text-2xl" style="color:#b45309"><span id="moves-value">0</span></p>
+        </div>
+       </div><button id="btn-restart" type="button" data-template-id="restart-button" class="canva-button tool-btn px-5 py-3 rounded-full font-semibold inline-flex items-center gap-2"><i data-lucide="rotate-ccw" style="width:18px;height:18px"></i><span></span></button>
+      </div>
+      <p id="feedback-banner" class="hidden text-center font-semibold my-3 py-2 rounded-xl fade-in" style="background:rgba(22,163,74,.12);color:#15803d" role="status" aria-live="polite"></p>
+      <div id="board" class="grid gap-3 md:gap-4 mt-4" style="grid-template-columns:repeat(4,minmax(0,1fr))"></div>
+     </section><!-- WIN SCREEN -->
+     <section id="win-screen" class="hidden">
+      <div class="panel rounded-3xl shadow-xl overflow-hidden mt-4 fade-in text-center">
+       <div class="p-8 md:p-12" style="background:linear-gradient(135deg,rgba(22,163,74,.15),rgba(8,145,178,.15))"><span class="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style="background:linear-gradient(135deg,#16a34a,#0891b2)"> <i data-lucide="party-popper" style="width:34px;height:34px;color:#fff"></i> </span>
+        <h2 data-template-id="win-title" class="canva-text mb-3"></h2>
+        <p data-template-id="win-message" class="canva-text max-w-2xl mx-auto"></p>
+        <p class="serif font-bold text-3xl mt-4" style="color:#0f766e"><span data-template-id="win-score-prefix" class="canva-text"></span> <span id="final-score">0</span></p>
+       </div>
+       <div class="p-6 md:p-10">
+        <div class="rounded-2xl p-5 mb-6 text-left" style="border:2px solid rgba(15,118,110,.2)">
+         <p data-template-id="win-education" class="canva-text leading-relaxed"></p>
+        </div><button id="btn-play-again" type="button" data-template-id="play-again-button" class="canva-button px-8 py-4 rounded-full font-bold shadow-lg inline-flex items-center gap-2"></button>
+       </div>
+      </div>
+     </section>
+    </div>
+   </main>
+   <footer class="w-full py-4">
+    <p data-template-id="footer-text" class="canva-text text-center text-sm opacity-70 px-4"></p>
+   </footer>
+  </div><!-- Card template (unbound - built by JS logic) -->
+  <template id="card-template"><button type="button" class="memory-card canva-card" aria-label="Carta virada para baixo">
+    <div class="card-inner">
+     <div class="card-front"><i data-lucide="dna" style="width:clamp(28px,7vw,50px);height:clamp(28px,7vw,50px)"></i> <span class="card-face-front font-semibold mt-1" style="font-size:clamp(.6rem,1.8vw,.85rem)">Ciência &amp; Saúde</span>
+     </div>
+     <div class="card-back"><i data-lucide="circle" class="concept-icon"></i> <span class="card-label"></span>
+     </div>
+    </div></button>
+  </template>
+  <script src="/_sdk/e063511df281944a.editing_sdk.js" integrity="sha512-Xa8p4aPfoMxVnzxQE2WAG0FfoaPLxdjOJMfUZGm1yZosJTYmnNDvgLkJ2EoN0i3zxjeQVAzUMSXNvTKQVqbXyQ=="></script>
+  <script>
+  // ---- Game concept data lives in JS (logic, not user-editable content) ----
+  const concepts = [
+    { id:'sistema',    icon:'venus-and-mars', label:'Sistema Reprodutor', color:'#0f766e' },
+    { id:'prevencao',  icon:'shield-check',   label:'Prevenção',          color:'#0891b2' },
+    { id:'ist',        icon:'stethoscope',    label:'IST',                color:'#b45309' },
+    { id:'exames',     icon:'clipboard-list', label:'Exames Preventivos', color:'#7c3aed' },
+    { id:'consent',    icon:'handshake',      label:'Consentimento',      color:'#db2777' },
+    { id:'respeito',   icon:'heart-handshake',label:'Respeito',           color:'#dc2626' },
+    { id:'educacao',   icon:'book-open',      label:'Educação em Saúde',  color:'#2563eb' },
+    { id:'autocuidado',icon:'sparkles',       label:'Autocuidado',        color:'#059669' },
+    { id:'preservativo',icon:'shield',        label:'Proteção',           color:'#0d9488' },
+    { id:'dialogo',    icon:'messages-square',label:'Diálogo Aberto',     color:'#ca8a04' }
+  ];
+
+  const board = document.getElementById('board');
+  const feedback = document.getElementById('feedback-banner');
+  const positiveMessages = ['Muito bem! 👏','Ótimo par! 🌟','Você está indo bem! 💚','Excelente aprendizado! ✨','Isso mesmo! 🎉'];
+
+  let deck = [], first=null, second=null, lock=false, pairs=0, moves=0, score=0, muted=false;
+
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+  function buildDeck(){
+    deck = shuffle([...concepts, ...concepts].map((c,i)=>({...c, uid:i})));
+  }
+
+  function renderBoard(){
+    board.innerHTML='';
+    const tpl = document.getElementById('card-template');
+    deck.forEach(card=>{
+      const node = tpl.content.cloneNode(true);
+      const btn = node.querySelector('.memory-card');
+      const icon = node.querySelector('.card-back .concept-icon');
+      const label = node.querySelector('.card-label');
+      icon.setAttribute('data-lucide', card.icon);
+      icon.style.color = card.color;
+      label.textContent = card.label;
+      btn.dataset.id = card.id;
+      btn.dataset.uid = card.uid;
+      btn.addEventListener('click', ()=>flip(btn, card));
+      board.appendChild(node);
+    });
+    lucide.createIcons();
+  }
+
+  function flip(btn, card){
+    if(lock || btn.classList.contains('flipped') || btn.classList.contains('matched')) return;
+    playClick();
+    btn.classList.add('flipped');
+    btn.setAttribute('aria-label', card.label);
+    if(!first){ first={btn,card}; return; }
+    second={btn,card};
+    moves++; document.getElementById('moves-value').textContent=moves;
+    lock=true;
+    if(first.card.id===second.card.id){
+      setTimeout(()=>{
+        first.btn.classList.add('matched'); second.btn.classList.add('matched');
+        first.btn.querySelector('.card-back').classList.add('pop');
+        second.btn.querySelector('.card-back').classList.add('pop');
+        pairs++; score+=100;
+        document.getElementById('pairs-value').textContent=pairs;
+        document.getElementById('score-value').textContent=score;
+        playSuccess();
+        showFeedback(positiveMessages[Math.floor(Math.random()*positiveMessages.length)]);
+        reset();
+        if(pairs===concepts.length) setTimeout(win, 700);
+      }, 450);
+    } else {
+      playError();
+      setTimeout(()=>{
+        first.btn.classList.remove('flipped'); second.btn.classList.remove('flipped');
+        first.btn.setAttribute('aria-label','Carta virada para baixo');
+        second.btn.setAttribute('aria-label','Carta virada para baixo');
+        reset();
+      }, 900);
+    }
+  }
+  function reset(){ first=null; second=null; lock=false; }
+
+  function showFeedback(msg){
+    feedback.textContent=msg; feedback.classList.remove('hidden');
+    clearTimeout(showFeedback._t);
+    showFeedback._t=setTimeout(()=>feedback.classList.add('hidden'), 1600);
+  }
+
+  function startGame(){
+    pairs=0; moves=0; score=0;
+    document.getElementById('pairs-value').textContent=0;
+    document.getElementById('moves-value').textContent=0;
+    document.getElementById('score-value').textContent=0;
+    feedback.classList.add('hidden');
+    buildDeck(); renderBoard(); reset();
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('win-screen').classList.add('hidden');
+    document.getElementById('game-screen').classList.remove('hidden');
+  }
+
+  function win(){
+    document.getElementById('final-score').textContent=score;
+    document.getElementById('game-screen').classList.add('hidden');
+    document.getElementById('win-screen').classList.remove('hidden');
+    playVictory();
+  }
+
+  // ---- Buttons ----
+  document.getElementById('btn-start').addEventListener('click', ()=>{ initAudio(); startGame(); });
+  document.getElementById('btn-restart').addEventListener('click', startGame);
+  document.getElementById('btn-play-again').addEventListener('click', startGame);
+
+  // Accessibility
+  let scale=1;
+  const applyScale=()=>document.documentElement.style.setProperty('--font-scale', scale);
+  document.getElementById('btn-font-inc').addEventListener('click', ()=>{ scale=Math.min(1.5,scale+0.1); applyScale(); });
+  document.getElementById('btn-font-dec').addEventListener('click', ()=>{ scale=Math.max(0.8,scale-0.1); applyScale(); });
+  document.getElementById('btn-contrast').addEventListener('click', (e)=>{ const on=document.body.classList.toggle('contrast'); e.currentTarget.setAttribute('aria-pressed',on); });
+  document.getElementById('btn-dark').addEventListener('click', (e)=>{ const on=document.body.classList.toggle('dark'); e.currentTarget.setAttribute('aria-pressed',on); });
+  document.getElementById('btn-mute').addEventListener('click', (e)=>{ muted=!muted; e.currentTarget.setAttribute('aria-pressed',muted); });
+
+  // ---- Web Audio (replaces mp3 files, which the sandbox blocks) ----
+  let actx=null;
+  function initAudio(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx&&actx.state==='suspended') actx.resume(); }
+  function tone(freq,dur,type='sine',vol=0.15){
+    if(muted||!actx) return;
+    const o=actx.createOscillator(), g=actx.createGain();
+    o.type=type; o.frequency.value=freq;
+    o.connect(g); g.connect(actx.destination);
+    const t=actx.currentTime;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    o.start(t); o.stop(t+dur);
+  }
+  function playClick(){ initAudio(); tone(440,0.08,'triangle',0.12); }
+  function playSuccess(){ initAudio(); tone(660,0.12,'sine'); setTimeout(()=>tone(880,0.16,'sine'),110); }
+  function playError(){ initAudio(); tone(200,0.18,'sawtooth',0.1); }
+  function playVictory(){ initAudio(); [523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,0.25,'sine'),i*150)); }
+
+  lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a17a843a55949a69',t:'MTc4MzQ2NTc2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
